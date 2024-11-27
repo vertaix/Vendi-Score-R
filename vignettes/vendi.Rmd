@@ -1,0 +1,87 @@
+---
+title: "Vendi Scores"
+output: github_document
+vignette: >
+  %\VignetteIndexEntry{vendi}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The Vendi Scores are a family of diversity metrics that are flexible, interpretable, and unsupervised.
+Defined as the entropy associated with the eigenvalues of a sample similarity matrix $\mathbf{K}$, the Vendi Score 
+only requires a pair-wise similarity measure. The Vendi Score is defined in [(Friedman and Dieng, 2023)](https://arxiv.org/abs/2210.02410). The order $q$ 
+of the Vendi Score weight the importance of rare and common elements in the diversity computation, as described in this [paper](https://arxiv.org/abs/2310.12952). 
+
+## Computing the Vendi Scores
+```{r setup}
+library(VendiScore)
+```
+
+To demonstrate some of the nice features of the Vendi Score, lets generate a few simple 1D mixture of Gaussian Datasets. 
+```{r, fig.width=7, fig.height=4}
+
+
+generate_data <- function(n_components=2, sd=0.1, tot_samp=360){
+  set.seed(42)
+  means <- rep(0, n_components)
+  for(i in 1:length(means)){
+    means[i] <- 3*(i-length(means))/2
+  }
+  data <- c()
+  for (i in 1:n_components) {
+    data <- c(data, rnorm(tot_samp / n_components, mean = means[i], sd = sd))
+  }
+  
+  return(data)
+}
+par(mfrow = c(2, 3))
+# First plot: 2 Gaussians
+set.seed(42)
+tot_samp <- 360
+sd <- 0.1
+data2 <- generate_data(2, sd=sd, tot_samp=tot_samp) 
+hist(data2, main = "2 Gaussians", xlab = "Value", col = "lightblue", breaks = 10)
+
+# Second plot: 3 Gaussians
+data3 <- generate_data(3, sd=sd, tot_samp=tot_samp) 
+hist(data3, main = "3 Gaussians", xlab = "Value", col = "lightblue", breaks = 10)
+
+# Third plot: 4 Gaussians
+data4 <- generate_data(4, sd=sd, tot_samp=tot_samp) 
+hist(data4, main = "4 Gaussians", xlab = "Value", col = "lightblue", breaks = 10)
+
+data5 <- generate_data(5, sd=sd, tot_samp=tot_samp) 
+hist(data5, main = "5 Gaussians", xlab = "Value", col = "lightblue", breaks = 15)
+
+data6 <- generate_data(6, sd=sd, tot_samp=tot_samp) 
+hist(data6, main = "6 Gaussians", xlab = "Value", col = "lightblue", breaks = 15)
+```
+
+Now we can evaluate the behavior of the Vendi Score on these datasets. 
+
+The Vendi Scores takes your data, a pair-wise similarity function, and the order $q$
+as arguments. The data can be in any format that supports indexing. Here, we use a
+simple Radial Basis Function (RBF) kernel to define similarity between pairs of samples.
+
+```{r, fig.width=7}
+rbf_kernel <- function(x, y, gamma = 0.75) exp(-gamma * sum((x - y)^2))
+vendi_scores <- c(score(data2, rbf_kernel, q=1.), score(data3, rbf_kernel, q=1.), 
+                  score(data4, rbf_kernel, q=1.), score(data5, rbf_kernel, q=1.), 
+                  score(data6, rbf_kernel, q=1.))
+
+x <- 2:6  # Shared x-axis
+
+plot(x, vendi_scores, type = "l", col = "blue", lwd = 2,
+     ylab = "Vendi Score", xlab = "Number of Gaussians", ylim = range(0,7), xaxt='n')
+points(x, vendi_scores, col = "blue", pch = 16)
+axis(1, at = seq(from = min(x), to = max(x), by = 1))
+```
+
+As we can see from above, the Vendi Score increases in direct correspondance with the increasing number of gaussians. 

@@ -1,0 +1,25 @@
+Package: VendiScore
+Type: Package
+Title: A metric for evaluating diversity in ML and the natural sciences 
+Version: 0.1.0
+Authors@R: c(
+    person("Friedman", "Dan", email="dfriedman@princeton.edu", role = "aut"),
+    person("Pasarkar", "Amey", email = "amey.pasarkar@princeton.edu", role = "ctb"),
+    person("Dieng", "Adji Bousso", email = "adji@princeton.edu", role = c("aut", "cre")),
+    person("Princeton Vertaix Lab", role = c("cph")))
+Description: Implementation of the Vendi Scores, a family of diversity metrics,
+    that can be employed across the sciences. The Vendi Scores only require a user-defined
+    pair-wise similarity metric to be employed on any dataset.
+URL: https://github.com/vertaix/Vendi-Score-R
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Depends:
+  R (>= 3.5.0)
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
