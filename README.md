@@ -1,4 +1,4 @@
-# R Implementation of the Vendi Score: A Diversity Evaluation Metric for Machine Learning
+# R Implementation of the Vendi Score: A Diversity Evaluation Metric for Machine Learning and Science
 
 This repository contains the R implementation of the Vendi Score (VS), a metric for evaluating diversity in machine learning and the natural sciences. The Vendi Scores are a family of diversity metrics that are flexible, interpretable, and unsupervised. Defined as the entropy associated with the eigenvalues of a sample similarity matrix $\mathbf{K}$, the Vendi Score only requires a pair-wise similarity measure. The Vendi Score is defined in this [paper](https://arxiv.org/abs/2210.02410). The order $q$ of the Vendi Score weight the importance of rare and common elements in the diversity computation, as described in this [paper](https://arxiv.org/abs/2310.12952).
 
